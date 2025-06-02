@@ -24,7 +24,7 @@
       register: files_found
     
     - name: deleting the files files_found
-      loop: "{{ found_files.files }}"
+      loop: "{{ files_found.files }}"
       ansible.builtin.file:
         path: "{{ item.path }}"
         state:  absent
