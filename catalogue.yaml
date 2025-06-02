@@ -77,6 +77,10 @@
     - name: printing command output
       ansible.builtin.debug:
         msg:  "{{ command_output }}"
+
+    - name: loading data to mongodb
+      when: command_output.stdout == "false"
+      ansible.builtin.shell:  mongosh --host mongodb.robotshop.site </app/db/master-data.js
     
 
 
