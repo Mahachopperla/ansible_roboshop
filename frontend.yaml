@@ -29,5 +29,29 @@
         path: "{{ item.path }}"
         state:  absent
 
+    - name: downloading new html script
+      ansible.builtin.get_url:
+        url:  https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+        dest: /tmp/frontend.zip
+
+    - name: unzip html script to destination location
+      ansible.builtin.unarchive:
+        src:  /tmp/frontend.zip
+        dest: /usr/share/nginx/html
+        remote_src: yes
+
+    - name: overwriting nginx.conf file with new content
+      ansible.builtin.copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+        remote_src: yes
+
+    - name: restarting nginx service since we modified content
+      ansible.builtin.service:
+        name: nginx
+        state:  restarted
+
+        
+
     
         
