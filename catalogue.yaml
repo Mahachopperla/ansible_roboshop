@@ -46,7 +46,7 @@
 
     - name: copying systemd service to desired path
       ansible.builtin.copy:
-        src:  catalogue.repo
+        src:  catalogue.service
         dest: /etc/systemd/system/catalogue.service
         remote_src: yes
 
