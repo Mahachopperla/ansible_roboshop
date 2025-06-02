@@ -23,7 +23,11 @@
         file_type:  any
       register: files_found
     
-    - name: display the found files
-      ansible.builtin.debug:
-        msg:  "{{ files_found }}"
+    - name: deleting the files files_found
+      loop: "{{ found_files.files }}"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state:  absent
+
+    
         
