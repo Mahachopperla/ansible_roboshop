@@ -21,7 +21,7 @@
       ansible.builtin.find:
         paths: /usr/share/nginx/html
         file_type:  any
-        register: files_found
+      register: files_found
     
     - name: display the found files
       ansible.builtin.debug:
