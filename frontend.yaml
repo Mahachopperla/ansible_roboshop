@@ -1,0 +1,27 @@
+- name: configuring frontend component
+  hosts:  frontend
+  tasks:
+    - name: disabling default nginx and enabling 1.24 version
+      ansible.builtin.command:  dnf module disable nginx -y
+      ansible.builtin.command:  dnf module enable nginx:1.24 -y
+
+    - name: installing nginx
+      ansible.builtin.package:
+        name: nginx
+        state:  present
+
+    - name: enabling and starting nginx service
+      ansible.builtin.service:
+        enabled:  yes
+        state:  started
+
+    - name: find files in default /html directory to remove default content
+      ansible.builtin.find:
+        paths: /usr/share/nginx/html
+        file_type:  any
+        register: files_found
+    
+    - name: display the found files
+      ansible.builtin.debug:
+        msg:  "{{ files_found }}"
+        
