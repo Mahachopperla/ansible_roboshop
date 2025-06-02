@@ -44,14 +44,14 @@
       ansible.builtin.copy:
         src: nginx.conf
         dest: /etc/nginx/nginx.conf
-        remote_src: yes
+        
 
     - name: restarting nginx service since we modified content
       ansible.builtin.service:
         name: nginx
         state:  restarted
 
-        
+
 
     
         
