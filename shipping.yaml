@@ -34,6 +34,14 @@
         dest: /app
         remote_src: yes
 
+    - name: installing module PyMySQL
+      ansible.builtin.pip:
+        name: "{{ item }}"
+        executable: pip3.9
+      loop:
+        - PyMySQL
+        - cryptography
+        
     - name: install maven dependencies
       ansible.builtin.command:  mvn clean package
       args:
@@ -77,6 +85,6 @@
         name: shipping
         state:  restarted
 
-        
+
     
     
