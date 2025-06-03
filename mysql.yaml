@@ -10,7 +10,7 @@
     - name: enable and start service
       ansible.builtin.service:
         enabled:  yes
-        state:  present
+        state:  started
 
     - name: setup root password
       community.mysql.mysql_user:
