@@ -69,7 +69,7 @@
 
     - name: import data to mysql
       community.mysql.mysql_db:
-        name: ""
+        name: all
         state: import
         target: "{{ item }}"
         login_user: root
