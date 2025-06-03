@@ -13,6 +13,11 @@
         enabled:  yes
         state:  started
 
+    - name: installing module PyMySQL
+      ansible.builtin.pip:
+        name: PyMySQL
+        executable: pip3.9
+
     - name: setup root password
       community.mysql.mysql_user:
         name: root
