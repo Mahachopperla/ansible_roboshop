@@ -15,8 +15,11 @@
 
     - name: installing module PyMySQL
       ansible.builtin.pip:
-        name: PyMySQL
+        name: "{{ item }}"
         executable: pip3.9
+      loop:
+        - PyMySQL
+        - cryptography
 
     - name: setup root password
       community.mysql.mysql_user:
