@@ -1,0 +1,22 @@
+- name: mysql configuration
+  hosts:  mysql.robotshop.site
+  become: yes
+  tasks:  
+    - name: install mysql
+      ansible.builtin.package:
+        name: mysql-server
+        state:  present
+
+    - name: enable and start service
+      ansible.builtin.service:
+        enabled:  yes
+        state:  present
+
+    - name: setup root password
+      community.mysql.mysql_user:
+        name: root
+        password: RoboShop@1
+        login_user: root
+        login_password: RoboShop@1
+        host: localhost
+        state: present

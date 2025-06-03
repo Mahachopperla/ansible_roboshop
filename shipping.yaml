@@ -1,0 +1,82 @@
+- name: shipping component
+  hosts:  shipping
+  become: yes
+  tasks:
+    - name: installing maven and mysql
+      ansible.builtin.package:
+        name: "{{ item }}""
+        state:  present
+      loop:
+        - maven
+        - mysql
+
+    - name: creating system user
+      ansible.builtin.user:
+        name: roboshop
+        system: true
+        home: /app
+        create_home:  yes
+        shell:  /sbin/nologin
+
+    - name: create dir if not exists
+      ansible.builtin.file:
+        path: /app
+        state:  directory
+
+    - name: downloading application file
+      ansible.builtin.get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+        dest: /tmp/shipping.zip
+
+    - name: unzipping the file content to /app directory
+      ansible.builtin.unarchive:
+        src:  /tmp/shipping.zip
+        dest: /app
+        remote_src: yes
+
+    - name: install maven dependencies
+      ansible.builtin.command:  mvn clean package
+      args:
+        chdir:  /app
+    
+    - name: moves jar package
+      ansible.builtin.command:  mv target/shipping-1.0.jar shipping.jar
+      args:
+        chdir:  /app
+    
+    - name: copy system file to systemd
+      ansible.builtin.copy:
+        src:  shipping.service
+        dest: /etc/systemd/system/shipping.service
+
+    - name: reloading daemon
+      ansible.builtin.systemd_service:
+        daemon_reload:  true
+
+    - name: start and enable shipping service
+      ansible.builtin.service:
+        name: shipping
+        enabled:  yes
+        state:  started
+
+    - name: import data to mysql
+      community.mysql.mysql_db:
+        name: ""
+        state: import
+        target: "{{ item }}"
+        login_user: root
+        login_password: RoboShop@1
+        login_host: mysql.robotshop.site
+      loop:
+        - /app/db/schema.sql
+        - /app/db/app-user.sql
+        - /app/db/master-data.sql
+
+    - name: restart shipping service
+      ansible.builtin.service:
+        name: shipping
+        state:  restarted
+
+        
+    
+    
