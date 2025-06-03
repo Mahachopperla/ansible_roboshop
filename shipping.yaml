@@ -74,11 +74,11 @@
         target: "{{ item }}"
         login_user: root
         login_password: RoboShop@1
-        login_host: mysql.robotshop.site
       loop:
         - /app/db/schema.sql
         - /app/db/app-user.sql
         - /app/db/master-data.sql
+      delegate_to: mysql.robotshop.site
 
     - name: restart shipping service
       ansible.builtin.service:
