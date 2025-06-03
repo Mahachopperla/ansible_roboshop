@@ -4,7 +4,7 @@
   tasks:
     - name: installing maven and mysql
       ansible.builtin.package:
-        name: "{{ item }}""
+        name: "{{ item }}"
         state:  present
       loop:
         - maven
@@ -41,7 +41,7 @@
       loop:
         - PyMySQL
         - cryptography
-        
+
     - name: install maven dependencies
       ansible.builtin.command:  mvn clean package
       args:
