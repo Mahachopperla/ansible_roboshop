@@ -14,7 +14,7 @@
     - name: replacing config file to allow all instances to connect to it
       ansible.builtin.replace:
         path: /etc/redis/redis.conf
-        regexp: '127.0.0.0'
+        regexp: '127.0.0.1'
         replace:  '0.0.0.0'
 
     - name: change protected mode to no
@@ -28,4 +28,3 @@
         name: redis
         enabled:  yes
         state:  started
-        
