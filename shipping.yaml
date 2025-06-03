@@ -15,7 +15,6 @@
         name: roboshop
         system: true
         home: /app
-        create_home:  yes
         shell:  /sbin/nologin
 
     - name: create dir if not exists
@@ -33,14 +32,6 @@
         src:  /tmp/shipping.zip
         dest: /app
         remote_src: yes
-
-    - name: installing module PyMySQL
-      ansible.builtin.pip:
-        name: "{{ item }}"
-        executable: pip3.9
-      loop:
-        - PyMySQL
-        - cryptography
 
     - name: install maven dependencies
       ansible.builtin.command:  mvn clean package
@@ -73,13 +64,13 @@
         state: import
         login_user: root
         login_password: RoboShop@1
-        login_host: shipping.robotshop.site
+        login_host: mysql.robotshop.site
         target: "{{ item }}"
       loop:
         - /app/db/schema.sql
         - /app/db/app-user.sql
         - /app/db/master-data.sql
-      delegate_to: mysql.robotshop.site
+      
       
 
     - name: restart shipping service
