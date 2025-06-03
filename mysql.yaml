@@ -25,7 +25,5 @@
       community.mysql.mysql_user:
         name: root
         password: RoboShop@1
-        login_user: root
-        login_password: RoboShop@1
         host: localhost
         state: present
