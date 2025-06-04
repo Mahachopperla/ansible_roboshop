@@ -1,59 +1,57 @@
-- name: payment component
-  hosts:  payment
+- name: conigure payment server
   become: yes
-  tasks:  
-    - name: installing python
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state:  present
-      loop:
-        - python3
-        - gcc
-        - python3-devel
-    
-    - name: creating system user
-      ansible.builtin.user:
-        name: roboshop
-        system: true
-        home: /app
-        create_home:  yes
-        shell:  /sbin/nologin
+  hosts: payment
+  tasks:
+  - name: install python3 packages
+    ansible.builtin.dnf:
+      name: "{{ item }}"
+      state: installed
+    loop:
+    - python3 
+    - gcc 
+    - python3-devel
 
-    - name: create dir if not exists
-      ansible.builtin.file:
-        path: /app
-        state:  directory
+  - name: create app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
 
-    - name: downloading application file
-      ansible.builtin.get_url:
-        url: https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip
-        dest: /tmp/payment.zip
+  - name: create roboshop system user
+    ansible.builtin.user:
+      name: roboshop
+      shell: /sbin/nologin
+      system: true
+      home: /app
 
-    - name: unzipping the file content to /app directory
-      ansible.builtin.unarchive:
-        src:  /tmp/payment.zip
-        dest: /app
-        remote_src: yes
+  - name: download payment code
+    ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
+      dest: /tmp/payment.zip
 
-    - name: installing dependencies using pip
-      ansible.builtin.pip:
-        requirements: requirements.txt
-        executable: pip3.9
-      args:
-        chdir:  /app
+  - name: extract payment code
+    ansible.builtin.unarchive:
+      src: /tmp/payment.zip
+      dest: /app
+      remote_src: yes
 
-    - name: copying systemd service to desired path
-      ansible.builtin.copy:
-        src:  payment.service
-        dest: /etc/systemd/system/payment.service
-        
+  - name: install dependencies
+    ansible.builtin.pip:
+      requirements: requirements.txt
+      executable: pip3.9
+    args:
+      chdir: /app
 
-    - name: daemon reload in progress
-      ansible.builtin.systemd_service:
-        daemon_reload:  true
+  - name: copy payment service
+    ansible.builtin.copy:
+      src: payment.service
+      dest: /etc/systemd/system/payment.service
 
-    - name: enable and start payment service
-      ansible.builtin.service:
-        name: payment
-        enabled:  yes
-        state:  started
+  - name: daemon reload
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+
+  - name: enable and start payment
+    ansible.builtin.service:
+      name: payment
+      state: started
+      enabled: yes
